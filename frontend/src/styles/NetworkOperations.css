@@ -1,0 +1,1600 @@
+/* ============================================================
+   SENTINEL-X // NETWORK OPERATIONS
+   Live Network Observability Interface
+   ============================================================ */
+
+.network-operations-page {
+  --net-acid: #d7ff57;
+  --net-cream: #ece8d9;
+  --net-muted: #9a9e89;
+  --net-dim: #747966;
+  --net-purple: #9b82ff;
+  --net-red: #ff6258;
+  --net-amber: #ffbd59;
+  --net-bg: #080906;
+  --net-panel: rgba(15, 17, 11, 0.94);
+  --net-line: rgba(232, 230, 211, 0.11);
+
+  position: relative;
+  width: 100%;
+  padding-bottom: 32px;
+  color: var(--net-cream);
+}
+
+
+/* ============================================================
+   HERO
+   ============================================================ */
+
+.network-ops-hero {
+  position: relative;
+  min-height: 230px;
+  padding: 36px 38px;
+  overflow: hidden;
+
+  border: 1px solid var(--net-line);
+
+  background:
+    radial-gradient(
+      circle at 74% 10%,
+      rgba(215, 255, 87, 0.055),
+      transparent 34%
+    ),
+    linear-gradient(
+      135deg,
+      rgba(18, 21, 14, 0.96),
+      rgba(8, 9, 6, 0.98)
+    );
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+
+  clip-path: polygon(
+    0 0,
+    calc(100% - 18px) 0,
+    100% 18px,
+    100% 100%,
+    18px 100%,
+    0 calc(100% - 18px)
+  );
+}
+
+.network-ops-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.32;
+
+  background-image:
+    linear-gradient(
+      rgba(215, 255, 87, 0.025) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(215, 255, 87, 0.025) 1px,
+      transparent 1px
+    );
+
+  background-size: 38px 38px;
+
+  mask-image:
+    linear-gradient(
+      to right,
+      black,
+      transparent 82%
+    );
+}
+
+.network-ops-hero::after {
+  content: "SX // NETOPS";
+
+  position: absolute;
+  top: 17px;
+  right: 24px;
+
+  color: rgba(215, 255, 87, 0.55);
+
+  font-family: var(--font-tech);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+}
+
+.network-ops-heading,
+.network-ops-hero-status {
+  position: relative;
+  z-index: 2;
+}
+
+.network-ops-eyebrow {
+  color: var(--net-acid);
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  font-family: var(--font-tech);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.network-ops-heading h2 {
+  margin: 17px 0 14px;
+
+  color: var(--net-cream);
+
+  font-size: clamp(44px, 5vw, 72px);
+  font-weight: 420;
+  line-height: 0.88;
+  letter-spacing: -0.055em;
+}
+
+.network-ops-heading h2 span {
+  display: block;
+
+  color: #969a84;
+  font-weight: 320;
+}
+
+.network-ops-heading p {
+  max-width: 620px;
+  margin: 0;
+
+  color: #a1a58f;
+
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.network-ops-hero-status {
+  min-width: 330px;
+
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 1px;
+
+  border: 1px solid var(--net-line);
+  background: var(--net-line);
+}
+
+.network-ops-status-block {
+  min-height: 78px;
+  padding: 16px;
+
+  background: rgba(9, 10, 6, 0.96);
+}
+
+.network-ops-status-block span,
+.network-ops-status-block strong {
+  display: block;
+}
+
+.network-ops-status-block span {
+  color: #858a75;
+
+  font-family: var(--font-tech);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.11em;
+}
+
+.network-ops-status-block strong {
+  margin-top: 9px;
+
+  color: var(--net-cream);
+
+  font-family: var(--font-tech);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.network-ops-mode {
+  grid-column: 1 / -1;
+
+  padding: 10px 15px;
+
+  color: #858a75;
+  background: rgba(9, 10, 6, 0.96);
+
+  font-family: var(--font-tech);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+}
+
+
+/* ============================================================
+   SHARED PANELS
+   ============================================================ */
+
+.network-fabric-panel,
+.protocol-panel,
+.network-sensor-panel,
+.network-connections-panel,
+.network-event-context {
+  position: relative;
+
+  border: 1px solid var(--net-line);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(17, 20, 13, 0.95),
+      rgba(8, 9, 6, 0.98)
+    );
+
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.012),
+    0 18px 50px rgba(0, 0, 0, 0.16);
+}
+
+.network-fabric-panel::after,
+.protocol-panel::after,
+.network-sensor-panel::after,
+.network-connections-panel::after {
+  content: "";
+
+  position: absolute;
+  top: -1px;
+  right: -1px;
+
+  width: 20px;
+  height: 20px;
+
+  border-top: 1px solid rgba(215, 255, 87, 0.48);
+  border-right: 1px solid rgba(215, 255, 87, 0.48);
+
+  pointer-events: none;
+}
+
+.network-panel-heading {
+  position: relative;
+  z-index: 5;
+
+  min-height: 74px;
+  padding: 19px 22px;
+
+  border-bottom: 1px solid var(--net-line);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.network-panel-heading .micro-label {
+  color: #858a75;
+
+  font-family: var(--font-tech);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+}
+
+.network-panel-heading h3 {
+  margin: 6px 0 0;
+
+  color: var(--net-cream);
+
+  font-size: 16px;
+  font-weight: 570;
+}
+
+.network-panel-heading > svg {
+  color: #9a9e89;
+}
+
+
+/* ============================================================
+   LIVE NETWORK FABRIC
+   ============================================================ */
+
+.network-fabric-panel {
+  margin-top: 15px;
+  min-height: 430px;
+}
+
+.network-panel-state {
+  color: #929780;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  font-family: var(--font-tech);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+}
+
+.network-panel-state i {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: var(--net-acid);
+
+  box-shadow:
+    0 0 8px rgba(215, 255, 87, 0.7),
+    0 0 18px rgba(215, 255, 87, 0.25);
+}
+
+.network-fabric-stage {
+  position: relative;
+
+  min-height: 310px;
+  padding: 42px 36px 70px;
+
+  overflow: hidden;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(210px, 0.78fr)
+    minmax(330px, 1.45fr)
+    minmax(210px, 0.78fr);
+
+  align-items: center;
+  gap: 28px;
+}
+
+.network-fabric-grid {
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+
+  opacity: 0.35;
+
+  background-image:
+    linear-gradient(
+      rgba(215, 255, 87, 0.025) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(215, 255, 87, 0.025) 1px,
+      transparent 1px
+    );
+
+  background-size: 32px 32px;
+
+  mask-image:
+    radial-gradient(
+      ellipse at center,
+      black,
+      transparent 88%
+    );
+}
+
+
+/* ============================================================
+   MACHINE NODES
+   ============================================================ */
+
+.network-machine-node {
+  position: relative;
+  z-index: 5;
+
+  min-height: 132px;
+  padding: 18px;
+
+  border: 1px solid rgba(236, 232, 217, 0.13);
+
+  background: rgba(11, 13, 8, 0.95);
+
+  display: grid;
+  grid-template-columns: 46px 1fr;
+  align-items: center;
+  gap: 14px;
+
+  clip-path: polygon(
+    0 0,
+    calc(100% - 10px) 0,
+    100% 10px,
+    100% 100%,
+    10px 100%,
+    0 calc(100% - 10px)
+  );
+}
+
+.network-machine-node::before {
+  content: "";
+
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  width: 2px;
+  height: 100%;
+
+  background: var(--net-acid);
+  opacity: 0.65;
+}
+
+.kali-machine::before {
+  background: var(--net-red);
+}
+
+.network-machine-icon {
+  width: 46px;
+  height: 46px;
+
+  border: 1px solid rgba(215, 255, 87, 0.2);
+
+  color: var(--net-acid);
+  background: rgba(215, 255, 87, 0.04);
+
+  display: grid;
+  place-items: center;
+}
+
+.kali-machine .network-machine-icon {
+  color: var(--net-red);
+
+  border-color: rgba(255, 98, 88, 0.25);
+  background: rgba(255, 98, 88, 0.045);
+}
+
+.network-machine-copy {
+  min-width: 0;
+}
+
+.network-machine-copy span,
+.network-machine-copy strong,
+.network-machine-copy small {
+  display: block;
+}
+
+.network-machine-copy span {
+  color: #858a75;
+
+  font-family: var(--font-tech);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.network-machine-copy strong {
+  margin-top: 6px;
+
+  overflow: hidden;
+
+  color: var(--net-cream);
+
+  font-family: var(--font-tech);
+  font-size: 12px;
+  font-weight: 650;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.network-machine-copy small {
+  margin-top: 5px;
+
+  color: #929780;
+
+  font-family: var(--font-tech);
+  font-size: 9px;
+  letter-spacing: 0.05em;
+}
+
+.network-machine-state {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+  padding: 4px 6px;
+
+  border: 1px solid rgba(255, 189, 89, 0.25);
+
+  color: var(--net-amber);
+  background: rgba(255, 189, 89, 0.035);
+
+  font-family: var(--font-tech);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.network-machine-state.connected {
+  color: var(--net-acid);
+
+  border-color: rgba(215, 255, 87, 0.22);
+  background: rgba(215, 255, 87, 0.035);
+}
+
+
+/* ============================================================
+   PACKET CHANNEL
+   ============================================================ */
+
+.network-link-zone {
+  position: relative;
+  z-index: 5;
+
+  min-width: 0;
+}
+
+.network-link-meta {
+  margin-bottom: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+
+  font-family: var(--font-tech);
+}
+
+.network-link-meta span {
+  color: #858a75;
+
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+}
+
+.network-link-meta strong {
+  color: #a0a58d;
+
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+}
+
+.network-link-line {
+  position: relative;
+
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+}
+
+.network-link-base {
+  position: absolute;
+  left: 0;
+  right: 0;
+
+  height: 1px;
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(215, 255, 87, 0.42) 0 8px,
+      transparent 8px 14px
+    );
+}
+
+.network-link-base::before,
+.network-link-base::after {
+  content: "";
+
+  position: absolute;
+  top: 50%;
+
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: var(--net-acid);
+
+  transform: translateY(-50%);
+
+  box-shadow:
+    0 0 10px rgba(215, 255, 87, 0.7),
+    0 0 20px rgba(215, 255, 87, 0.2);
+}
+
+.network-link-base::before {
+  left: 0;
+}
+
+.network-link-base::after {
+  right: 0;
+}
+
+.network-packet-particle {
+  position: absolute;
+  z-index: 4;
+
+  top: 50%;
+
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: var(--net-acid);
+
+  transform: translate(-50%, -50%);
+
+  box-shadow:
+    0 0 8px var(--net-acid),
+    0 0 18px rgba(215, 255, 87, 0.5);
+}
+
+.network-flow-arrow {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 27px;
+  height: 27px;
+
+  color: var(--net-acid);
+  background: #0b0d08;
+
+  transform: translate(-50%, -50%);
+
+  display: grid;
+  place-items: center;
+}
+
+.network-port-row {
+  margin-top: 14px;
+
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+
+  gap: 7px;
+}
+
+.network-port {
+  min-width: 0;
+
+  padding: 9px 6px;
+
+  border: 1px solid rgba(236, 232, 217, 0.08);
+
+  background: rgba(255, 255, 255, 0.009);
+
+  text-align: center;
+}
+
+.network-port span,
+.network-port strong {
+  display: block;
+}
+
+.network-port span {
+  color: #747966;
+
+  font-family: var(--font-tech);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+}
+
+.network-port strong {
+  margin-top: 4px;
+
+  color: #a7ac93;
+
+  font-family: var(--font-tech);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+
+/* ============================================================
+   SENTINEL SENSOR HOOK
+   ============================================================ */
+
+.network-sensor-hook {
+  position: absolute;
+  z-index: 8;
+
+  left: 50%;
+  bottom: 14px;
+
+  min-width: 215px;
+
+  transform: translateX(-50%);
+
+  text-align: center;
+}
+
+.sensor-hook-line {
+  width: 1px;
+  height: 31px;
+
+  margin: 0 auto;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(155, 130, 255, 0.85),
+      transparent
+    );
+}
+
+.sensor-hook-core {
+  padding: 8px 12px;
+
+  border: 1px solid rgba(155, 130, 255, 0.3);
+
+  color: var(--net-purple);
+
+  background: rgba(155, 130, 255, 0.045);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  box-shadow:
+    0 0 25px rgba(155, 130, 255, 0.035);
+}
+
+.sensor-hook-core div {
+  text-align: left;
+}
+
+.sensor-hook-core span,
+.sensor-hook-core strong {
+  display: block;
+}
+
+.sensor-hook-core span {
+  color: #918a7d;
+
+  font-family: var(--font-tech);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+}
+
+.sensor-hook-core strong {
+  margin-top: 3px;
+
+  color: #b3a3ff;
+
+  font-family: var(--font-tech);
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.network-sensor-hook > small {
+  display: block;
+
+  margin-top: 6px;
+
+  color: #747966;
+
+  font-family: var(--font-tech);
+  font-size: 9px;
+  letter-spacing: 0.07em;
+}
+
+
+/* ============================================================
+   NETWORK LEGEND
+   ============================================================ */
+
+.network-fabric-legend {
+  min-height: 46px;
+  padding: 0 22px;
+
+  border-top: 1px solid var(--net-line);
+
+  color: #858a75;
+
+  display: flex;
+  align-items: center;
+  gap: 28px;
+
+  font-family: var(--font-tech);
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.network-fabric-legend span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.network-fabric-legend i {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+}
+
+.legend-acid {
+  background: var(--net-acid);
+
+  box-shadow:
+    0 0 8px rgba(215, 255, 87, 0.6);
+}
+
+.legend-cream {
+  background: var(--net-cream);
+}
+
+.legend-purple {
+  background: var(--net-purple);
+
+  box-shadow:
+    0 0 8px rgba(155, 130, 255, 0.45);
+}
+
+
+/* ============================================================
+   LOWER GRID
+   ============================================================ */
+
+.network-ops-grid {
+  margin-top: 15px;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.25fr)
+    minmax(320px, 0.75fr);
+
+  gap: 15px;
+}
+
+.protocol-panel,
+.network-sensor-panel {
+  min-height: 315px;
+}
+
+
+/* ============================================================
+   PROTOCOL ANALYSIS
+   ============================================================ */
+
+.protocol-spectrum {
+  padding: 25px 22px 14px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.protocol-row {
+  display: grid;
+
+  grid-template-columns:
+    105px
+    minmax(0, 1fr)
+    58px;
+
+  align-items: center;
+  gap: 16px;
+}
+
+.protocol-label {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.protocol-label span {
+  color: #747966;
+
+  font-family: var(--font-tech);
+  font-size: 9px;
+}
+
+.protocol-label strong {
+  color: #b0b49d;
+
+  font-family: var(--font-tech);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.protocol-track {
+  height: 4px;
+
+  overflow: hidden;
+
+  background: #25291d;
+}
+
+.protocol-track > div {
+  height: 100%;
+
+  background:
+    linear-gradient(
+      90deg,
+      #82943d,
+      var(--net-acid)
+    );
+
+  box-shadow:
+    0 0 9px rgba(215, 255, 87, 0.3);
+}
+
+.protocol-value {
+  color: #a0a58d;
+
+  font-family: var(--font-tech);
+  font-size: 11px;
+  font-weight: 600;
+
+  text-align: right;
+}
+
+.protocol-disclaimer {
+  margin: 15px 22px 0;
+  padding-top: 13px;
+
+  border-top: 1px solid var(--net-line);
+
+  color: #858a75;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  font-family: var(--font-tech);
+  font-size: 9px;
+  line-height: 1.55;
+  letter-spacing: 0.05em;
+}
+
+
+/* ============================================================
+   COLLECTION STATUS
+   ============================================================ */
+
+.sensor-status-core {
+  position: relative;
+
+  width: 150px;
+  height: 150px;
+
+  margin: 23px auto 20px;
+
+  display: grid;
+  place-items: center;
+}
+
+.sensor-radar {
+  position: absolute;
+  inset: 0;
+
+  border: 1px dashed rgba(215, 255, 87, 0.22);
+  border-radius: 50%;
+}
+
+.sensor-radar::before,
+.sensor-radar::after {
+  content: "";
+
+  position: absolute;
+
+  border-radius: 50%;
+}
+
+.sensor-radar::before {
+  inset: 18px;
+
+  border: 1px solid rgba(215, 255, 87, 0.11);
+}
+
+.sensor-radar::after {
+  inset: 35px;
+
+  border: 1px dotted rgba(215, 255, 87, 0.16);
+}
+
+.sensor-radar > span {
+  position: absolute;
+
+  left: 50%;
+  top: 0;
+
+  width: 1px;
+  height: 50%;
+
+  transform-origin: bottom center;
+
+  background:
+    linear-gradient(
+      to bottom,
+      var(--net-acid),
+      transparent
+    );
+
+  box-shadow:
+    0 0 8px rgba(215, 255, 87, 0.25);
+}
+
+.sensor-status-center {
+  position: relative;
+  z-index: 3;
+
+  width: 84px;
+  height: 84px;
+
+  border: 1px solid rgba(215, 255, 87, 0.22);
+  border-radius: 50%;
+
+  color: var(--net-acid);
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(215, 255, 87, 0.08),
+      #0a0c07 70%
+    );
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.sensor-status-center strong,
+.sensor-status-center span {
+  display: block;
+}
+
+.sensor-status-center strong {
+  margin-top: 6px;
+
+  font-family: var(--font-tech);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.sensor-status-center span {
+  margin-top: 4px;
+
+  color: #858a75;
+
+  font-family: var(--font-tech);
+  font-size: 9px;
+}
+
+.sensor-status-list {
+  padding: 0 22px 18px;
+}
+
+.sensor-status-item {
+  min-height: 40px;
+
+  border-top: 1px solid rgba(236, 232, 217, 0.07);
+
+  display: grid;
+
+  grid-template-columns:
+    22px
+    1fr
+    auto;
+
+  align-items: center;
+  gap: 8px;
+}
+
+.sensor-status-item svg {
+  color: #858a75;
+}
+
+.sensor-status-item span {
+  color: #858a75;
+
+  font-family: var(--font-tech);
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.sensor-status-item strong {
+  color: #a0a58d;
+
+  font-family: var(--font-tech);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.network-state-online {
+  color: var(--net-acid) !important;
+}
+
+.network-state-offline {
+  color: var(--net-red) !important;
+}
+
+
+/* ============================================================
+   AGGREGATED CONNECTION FLOW TABLE
+   ============================================================ */
+
+.network-connections-panel {
+  margin-top: 15px;
+  overflow: hidden;
+}
+
+.network-table-badge {
+  padding: 6px 9px;
+
+  border: 1px solid rgba(215, 255, 87, 0.2);
+
+  color: var(--net-acid);
+  background: rgba(215, 255, 87, 0.035);
+
+  font-family: var(--font-tech);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+}
+
+.network-table {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.network-table-head,
+.network-table-row {
+  display: grid;
+  align-items: center;
+}
+
+/*
+   Seven columns:
+   LAST SEEN | SOURCE | DESTINATION | PORT |
+   PROTOCOL | DIRECTION | PACKETS
+*/
+
+.network-flow-columns {
+  grid-template-columns:
+    100px
+    minmax(135px, 1fr)
+    minmax(155px, 1.15fr)
+    80px
+    90px
+    105px
+    75px;
+}
+
+.network-table-head {
+  min-height: 43px;
+  padding: 0 22px;
+
+  border-bottom: 1px solid var(--net-line);
+
+  color: #858a75;
+  background: rgba(255, 255, 255, 0.01);
+
+  font-family: var(--font-tech);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.network-table-head span:last-child {
+  text-align: right;
+}
+
+.network-table-row {
+  min-height: 53px;
+  padding: 0 22px;
+
+  border-bottom:
+    1px solid rgba(236, 232, 217, 0.055);
+
+  transition:
+    background 160ms ease,
+    transform 160ms ease;
+}
+
+.network-table-row:hover {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(215, 255, 87, 0.025),
+      rgba(155, 130, 255, 0.012)
+    );
+}
+
+.network-table-row span,
+.network-table-row strong {
+  min-width: 0;
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.network-table-row > span {
+  color: #8d927c;
+
+  font-family: var(--font-tech);
+  font-size: 10px;
+}
+
+.network-table-row > strong {
+  color: #b0b39f;
+
+  font-family: var(--font-tech);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.table-port {
+  color: var(--net-acid) !important;
+
+  font-size: 11px !important;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.table-state {
+  color: #a0a58d !important;
+
+  font-size: 9px !important;
+  font-weight: 700;
+
+  letter-spacing: 0.04em;
+}
+
+.flow-packet-count {
+  color: var(--net-acid) !important;
+
+  font-family: var(--font-tech);
+  font-size: 11px !important;
+  font-weight: 750 !important;
+  font-variant-numeric: tabular-nums;
+
+  text-align: right;
+
+  text-shadow:
+    0 0 10px rgba(215, 255, 87, 0.18);
+}
+
+.network-table-footer {
+  min-height: 46px;
+  padding: 0 22px;
+
+  color: #747966;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  font-family: var(--font-tech);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+}
+
+
+/* Empty table state */
+
+.stream-empty {
+  min-height: 100px;
+
+  color: #858a75;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  font-family: var(--font-tech);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+}
+
+
+/* ============================================================
+   EVENT CONTEXT
+   ============================================================ */
+
+.network-event-context {
+  min-height: 86px;
+  margin-top: 15px;
+  padding: 15px 20px;
+
+  display: grid;
+
+  grid-template-columns:
+    30px
+    minmax(180px, 0.8fr)
+    minmax(280px, 1.5fr)
+    auto;
+
+  align-items: center;
+  gap: 18px;
+}
+
+.network-event-context > svg {
+  color: var(--net-purple);
+}
+
+.network-event-context div > span,
+.network-event-context div > strong {
+  display: block;
+}
+
+.network-event-context div > span {
+  color: #858a75;
+
+  font-family: var(--font-tech);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+}
+
+.network-event-context div > strong {
+  margin-top: 5px;
+
+  color: #b0b39f;
+
+  font-family: var(--font-tech);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.network-event-context p {
+  margin: 0;
+
+  color: #8d927c;
+
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.network-event-count {
+  min-width: 72px;
+
+  color: var(--net-cream);
+
+  font-family: var(--font-tech);
+  font-size: 26px;
+  font-weight: 500;
+
+  text-align: right;
+}
+
+.network-event-count > span {
+  display: block;
+
+  margin-top: 4px;
+
+  color: #747966 !important;
+
+  font-family: var(--font-tech);
+  font-size: 9px !important;
+  font-weight: 600;
+
+  letter-spacing: 0.08em !important;
+}
+
+
+/* ============================================================
+   MODULE TEXT SAFETY
+   ============================================================ */
+
+.network-operations-page .micro-label {
+  font-size: 9px;
+}
+
+.network-operations-page small {
+  line-height: 1.45;
+}
+
+
+/* ============================================================
+   RESPONSIVE - LARGE DESKTOP
+   ============================================================ */
+
+@media (max-width: 1350px) {
+  .network-flow-columns {
+    grid-template-columns:
+      90px
+      minmax(125px, 1fr)
+      minmax(140px, 1.1fr)
+      70px
+      80px
+      95px
+      65px;
+  }
+}
+
+
+/* ============================================================
+   RESPONSIVE - LARGE TABLET
+   ============================================================ */
+
+@media (max-width: 1200px) {
+  .network-ops-hero {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .network-ops-hero-status {
+    width: 100%;
+  }
+
+  .network-fabric-stage {
+    grid-template-columns:
+      minmax(180px, 0.8fr)
+      minmax(250px, 1.2fr)
+      minmax(180px, 0.8fr);
+
+    padding-inline: 24px;
+  }
+
+  .network-flow-columns {
+    min-width: 900px;
+
+    grid-template-columns:
+      95px
+      140px
+      155px
+      75px
+      85px
+      100px
+      70px;
+  }
+}
+
+
+/* ============================================================
+   RESPONSIVE - TABLET
+   ============================================================ */
+
+@media (max-width: 980px) {
+  .network-fabric-stage {
+    padding: 30px 22px 100px;
+
+    grid-template-columns: 1fr;
+
+    gap: 20px;
+  }
+
+  .network-link-zone {
+    padding: 6px 32px;
+  }
+
+  .network-machine-node {
+    width: 100%;
+    max-width: 520px;
+
+    margin: auto;
+  }
+
+  .network-sensor-hook {
+    bottom: 15px;
+  }
+
+  .network-ops-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /*
+     Keep all seven flow columns.
+     The table scrolls horizontally instead of hiding
+     important security information.
+  */
+
+  .network-flow-columns {
+    min-width: 900px;
+  }
+
+  .network-event-context {
+    grid-template-columns:
+      30px
+      1fr
+      auto;
+  }
+
+  .network-event-context p {
+    display: none;
+  }
+}
+
+
+/* ============================================================
+   RESPONSIVE - MOBILE
+   ============================================================ */
+
+@media (max-width: 650px) {
+  .network-ops-hero {
+    min-height: auto;
+
+    padding: 30px 23px;
+  }
+
+  .network-ops-heading h2 {
+    font-size: 42px;
+  }
+
+  .network-ops-heading p {
+    font-size: 12px;
+  }
+
+  .network-ops-hero-status {
+    min-width: 0;
+  }
+
+  .network-fabric-stage {
+    padding-inline: 14px;
+  }
+
+  .network-link-zone {
+    padding-inline: 6px;
+  }
+
+  .network-port-row {
+    grid-template-columns:
+      repeat(3, 1fr);
+  }
+
+  .network-fabric-legend {
+    align-items: flex-start;
+    flex-direction: column;
+
+    padding-block: 12px;
+
+    gap: 9px;
+  }
+
+  .protocol-row {
+    grid-template-columns:
+      78px
+      1fr
+      45px;
+
+    gap: 9px;
+  }
+
+  .network-table {
+    overflow-x: auto;
+  }
+
+  .network-flow-columns {
+    min-width: 880px;
+  }
+
+  .network-table-head,
+  .network-table-row {
+    padding-inline: 16px;
+  }
+
+  .network-table-footer {
+    align-items: flex-start;
+    flex-direction: column;
+
+    padding-block: 11px;
+
+    gap: 6px;
+  }
+
+  .network-event-context {
+    grid-template-columns:
+      26px
+      1fr
+      auto;
+
+    padding-inline: 14px;
+  }
+}
+
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .network-packet-particle,
+  .sensor-radar,
+  .network-panel-state i {
+    animation: none !important;
+  }
+}

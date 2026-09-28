@@ -1,0 +1,52 @@
+# ==============================
+# Sentinel-X Git Ignore
+# ==============================
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Sentinel-X runtime database
+*.db
+*.sqlite
+*.sqlite3
+backend/data/
+
+# Node / React
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+
+# Logs
+*.log
+logs/
+
+# Testing / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE / editor
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+# Development backups
+*_working_backup.py
