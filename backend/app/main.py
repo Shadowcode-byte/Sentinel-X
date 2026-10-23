@@ -10,6 +10,7 @@ from app.api.incidents import router as incidents_router
 from app.api.risk import router as risk_router
 from app.api.forensics import router as forensics_router
 from app.api.audit import router as audit_router
+from app.api.reports import router as reports_router
 
 from app.core.init_db import init_db
 
@@ -40,7 +41,7 @@ app = FastAPI(
         "Unified Cyber Threat Detection, Network Analysis "
         "& Incident Response Platform"
     ),
-    version="0.6.0",
+    version="0.7.0",
     lifespan=lifespan,
 )
 
@@ -71,6 +72,7 @@ app.include_router(incidents_router)
 app.include_router(risk_router)
 app.include_router(forensics_router)
 app.include_router(audit_router)
+app.include_router(reports_router)
 
 
 # ---------------------------------------------------------
@@ -83,7 +85,7 @@ def root():
         "platform": "Sentinel-X",
         "message": "Unified Security Operations Platform",
         "status": "online",
-        "version": "0.6.0",
+        "version": "0.7.0",
     }
 
 
@@ -112,5 +114,5 @@ def system_status():
         "monitoring": True,
         "threat_level": "LOW",
         "active_incidents": 0,
-        "version": "0.6.0",
+        "version": "0.7.0",
     }
