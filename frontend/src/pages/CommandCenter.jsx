@@ -11,6 +11,8 @@ import SecurityCore from "../components/dashboard/SecurityCore";
 import NetworkPulse from "../components/telemetry/NetworkPulse";
 import DefenseTopology from "../components/telemetry/DefenseTopology";
 import EventStream from "../components/telemetry/EventStream";
+import SOCMetrics from "../components/dashboard/SOCMetrics";
+import "../styles/SOCMetrics.css";
 
 
 function normalizeSeverity(value) {
@@ -23,6 +25,11 @@ function CommandCenter({
   events = [],
   backendOnline,
   highSeverityEvents = 0,
+  openIncidentCount = 0,
+  activeThreats = 0,
+  currentRiskScore = null,
+  captureActive = false,
+  moduleErrors = {},
 }) {
   /*
    * =====================================================
@@ -216,6 +223,15 @@ function CommandCenter({
           PRIMARY SECURITY GRID
           =================================================== */}
 
+      {/* SENTINEL-X 2.0 - SOC METRICS */}
+
+      <SOCMetrics
+        activeThreats={activeThreats}
+        openIncidentCount={openIncidentCount}
+        currentRiskScore={currentRiskScore}
+        captureActive={captureActive}
+        moduleErrors={moduleErrors}
+      />
       <section className="primary-grid">
         <SecurityCore
           threatLevel={threatLevel}

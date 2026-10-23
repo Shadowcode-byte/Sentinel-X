@@ -1,0 +1,185 @@
+
+/* ============================================================
+   SENTINEL-X 2.0
+   SOC METRICS
+   ============================================================ */
+
+.sx-soc-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.sx-soc-metric {
+  --metric-color: var(--acid);
+  --metric-soft: rgba(215, 255, 87, 0.08);
+
+  position: relative;
+  min-width: 0;
+  min-height: 148px;
+  padding: 18px 19px;
+  overflow: hidden;
+
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(19, 23, 16, 0.94),
+      rgba(8, 10, 7, 0.98)
+    );
+
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.018),
+    0 14px 35px rgba(0, 0, 0, 0.12);
+
+  transition:
+    border-color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.sx-soc-metric:hover {
+  border-color:
+    color-mix(in srgb, var(--metric-color) 32%, transparent);
+
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.22),
+    0 0 22px var(--metric-soft);
+}
+
+.sx-soc-metric--danger {
+  --metric-color: var(--red);
+  --metric-soft: rgba(255, 93, 82, 0.08);
+}
+
+.sx-soc-metric--warning {
+  --metric-color: var(--amber);
+  --metric-soft: rgba(255, 189, 89, 0.08);
+}
+
+.sx-soc-metric--risk {
+  --metric-color: var(--purple);
+  --metric-soft: rgba(139, 108, 255, 0.08);
+}
+
+.sx-soc-metric--neutral {
+  --metric-color: #858a75;
+  --metric-soft: rgba(133, 138, 117, 0.06);
+}
+
+.sx-soc-metric__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sx-soc-metric__label {
+  color: var(--cream-muted);
+  font-family: var(--font-tech);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.sx-soc-metric__icon {
+  width: 32px;
+  height: 32px;
+
+  display: grid;
+  place-items: center;
+
+  color: var(--metric-color);
+  background: var(--metric-soft);
+
+  border: 1px solid
+    color-mix(in srgb, var(--metric-color) 18%, transparent);
+}
+
+.sx-soc-metric__value {
+  margin-top: 14px;
+
+  color: var(--metric-color);
+  font-family: var(--font-tech);
+  font-size: clamp(23px, 2.3vw, 34px);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.045em;
+  overflow-wrap: anywhere;
+}
+
+.sx-soc-metric__bottom {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.sx-soc-metric__indicator {
+  flex: 0 0 auto;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+
+  background: var(--metric-color);
+  box-shadow: 0 0 9px var(--metric-color);
+}
+
+.sx-soc-metric__description {
+  color: #858a75;
+  font-family: var(--font-tech);
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.sx-soc-metric__accent {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 36%;
+  height: 2px;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--metric-color),
+      transparent
+    );
+
+  opacity: 0.65;
+}
+
+@media (max-width: 1250px) {
+  .sx-soc-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 650px) {
+  .sx-soc-metrics {
+    gap: 9px;
+  }
+
+  .sx-soc-metric {
+    min-height: 138px;
+    padding: 13px;
+  }
+
+  .sx-soc-metric__label {
+    font-size: 9px;
+  }
+
+  .sx-soc-metric__value {
+    font-size: 23px;
+  }
+
+  .sx-soc-metric__description {
+    font-size: 9px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sx-soc-metric {
+    transition: none;
+  }
+}

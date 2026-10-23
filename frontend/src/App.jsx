@@ -1,3 +1,4 @@
+
 import {
   BrowserRouter,
   Navigate,
@@ -24,6 +25,10 @@ import Reports from "./pages/Reports";
 import { useSentinelData } from "./hooks/useSentinelData";
 
 
+// ---------------------------------------------------------
+// Sentinel-X Application
+// ---------------------------------------------------------
+
 function App() {
   const sentinelData = useSentinelData();
 
@@ -43,6 +48,8 @@ function App() {
             />
           }
         >
+          {/* Command Center */}
+
           <Route
             path="/"
             element={
@@ -53,48 +60,84 @@ function App() {
                 highSeverityEvents={
                   sentinelData.highSeverityEvents
                 }
+                openIncidentCount={
+                  sentinelData.openIncidentCount
+                }
+                activeThreats={
+                  sentinelData.activeThreats
+                }
+                currentRiskScore={
+                  sentinelData.currentRiskScore
+                }
+                captureActive={
+                  sentinelData.captureActive
+                }
+                moduleErrors={
+                  sentinelData.moduleErrors
+                }
               />
             }
           />
+
+          {/* Network Operations */}
 
           <Route
             path="/network"
             element={<NetworkOperations />}
           />
 
+          {/* Threat Detection */}
+
           <Route
             path="/detections"
             element={<ThreatDetection />}
           />
+
+          {/* Incident Operations */}
 
           <Route
             path="/incidents"
             element={<Incidents />}
           />
 
+          {/* Risk Intelligence */}
+
           <Route
             path="/risk"
             element={<RiskIntelligence />}
           />
+
+          {/* Digital Forensics */}
 
           <Route
             path="/forensics"
             element={<Forensics />}
           />
 
+          {/* Security Audit */}
+
           <Route
             path="/audit"
             element={<SecurityAudit />}
           />
+
+          {/* Security Reports */}
 
           <Route
             path="/reports"
             element={<Reports />}
           />
 
+          {/* Unknown Routes */}
+
           <Route
             path="*"
-            element={<Navigate to="/" replace />}
+            element={
+              <Navigate
+                to="/"
+                replace
+              />
+            }
           />
         </Route>
       </Routes>
@@ -103,6 +146,10 @@ function App() {
 }
 
 
+// ---------------------------------------------------------
+// Sentinel-X Boot Screen
+// ---------------------------------------------------------
+
 function BootScreen() {
   return (
     <div className="boot-screen">
@@ -110,12 +157,24 @@ function BootScreen() {
 
       <motion.div
         className="boot-core"
-        initial={{ opacity: 0, scale: 0.82 }}
-        animate={{ opacity: 1, scale: 1 }}
+        initial={{
+          opacity: 0,
+          scale: 0.82,
+        }}
+        animate={{
+          opacity: 1,
+          scale: 1,
+        }}
+        transition={{
+          duration: 0.5,
+          ease: "easeOut",
+        }}
       >
         <motion.div
           className="boot-ring"
-          animate={{ rotate: 360 }}
+          animate={{
+            rotate: 360,
+          }}
           transition={{
             duration: 3,
             repeat: Infinity,
@@ -127,7 +186,9 @@ function BootScreen() {
 
         <strong>SENTINEL-X</strong>
 
-        <span>INITIALIZING DEFENSE GRID</span>
+        <span>
+          INITIALIZING DEFENSE GRID
+        </span>
       </motion.div>
     </div>
   );
