@@ -36,7 +36,7 @@ const STATE_CONFIG = {
     label: "HIGH",
     code: "SYS-90",
     message:
-      "High-severity threat activity detected. Investigation is required.",
+      "High-severity security event recorded. Review unresolved incidents.",
   },
 
   CRITICAL: {
@@ -338,7 +338,7 @@ function SecurityCore({
 
 
     if (isAttack) {
-      return "HIGH-SEVERITY THREAT";
+      return "HIGH-RISK INCIDENT";
     }
 
 
@@ -782,7 +782,7 @@ function SecurityCore({
 
 
             <span>
-              THREAT LEVEL
+              SECURITY POSTURE
             </span>
 
 
@@ -846,7 +846,7 @@ function SecurityCore({
               />
 
               <span>
-                TARGET LOCK
+                INCIDENT FLAGGED
               </span>
             </motion.div>
           )}
