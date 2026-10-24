@@ -15,6 +15,8 @@ import "../styles/NetworkOperations.css";
 import "../styles/ProtocolFilter.css";
 import ProtocolFilter from "../components/telemetry/ProtocolFilter";
 import PacketRateAnalytics from "../components/telemetry/PacketRateAnalytics";
+import FlowInspector from "../components/telemetry/FlowInspector";
+import "../styles/FlowInspector.css";
 import "../styles/PacketRateAnalytics.css";
 
 import {
@@ -1273,6 +1275,12 @@ function NetworkOperations() {
           BACKEND EVENT CONTEXT
           ===================================================== */}
 
+      {/* SENTINEL-X 2.0 - ADVANCED FLOW INSPECTION */}
+
+      <FlowInspector
+        connections={telemetry.connections}
+        captureActive={captureActive}
+      />
       <section className="network-event-context">
         <Crosshair
           size={17}
