@@ -124,10 +124,7 @@ function CommandCenter({
     ) || null;
 
 
-  const monitoringActive =
-    Boolean(
-      system?.monitoring
-    );
+  const monitoringActive = captureActive && !moduleErrors.network;
 
 
   return (
@@ -157,11 +154,13 @@ function CommandCenter({
               ? "green"
               : "red"
           }
-          label="MONITORING"
+          label="PACKET CAPTURE"
           value={
-            monitoringActive
+            moduleErrors.network
+              ? "UNKNOWN"
+              : monitoringActive
               ? "ACTIVE"
-              : "INACTIVE"
+              : "STANDBY"
           }
         />
 
@@ -237,11 +236,15 @@ function CommandCenter({
           threatLevel={threatLevel}
           backendOnline={backendOnline}
           eventCount={events.length}
+          captureActive={captureActive}
+          networkStatusUnavailable={Boolean(moduleErrors.network)}
         />
 
 
         <NetworkPulse
           eventCount={events.length}
+          captureActive={captureActive}
+          networkStatusUnavailable={Boolean(moduleErrors.network)}
           backendOnline={backendOnline}
         />
       </section>

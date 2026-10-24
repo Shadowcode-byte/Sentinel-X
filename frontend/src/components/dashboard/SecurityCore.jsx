@@ -161,6 +161,8 @@ function SecurityCore({
   threatLevel = "UNKNOWN",
   backendOnline = false,
   eventCount = 0,
+  captureActive = false,
+  networkStatusUnavailable = false,
 }) {
   const reduceMotion =
     useReducedMotion();
@@ -486,9 +488,7 @@ function SecurityCore({
           />
 
           <span>
-            {backendOnline
-              ? "SENSOR ACTIVE"
-              : "SENSOR OFFLINE"}
+            {!backendOnline ? "SENSOR OFFLINE" : networkStatusUnavailable ? "SENSOR UNKNOWN" : captureActive ? "SENSOR ACTIVE" : "SENSOR STANDBY"}
           </span>
         </div>
       </div>
@@ -860,9 +860,7 @@ function SecurityCore({
             </span>
 
             <strong>
-              {backendOnline
-                ? "ACTIVE"
-                : "OFFLINE"}
+              {!backendOnline ? "OFFLINE" : networkStatusUnavailable ? "UNKNOWN" : captureActive ? "ACTIVE" : "STANDBY"}
             </strong>
           </div>
 
