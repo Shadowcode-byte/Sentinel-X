@@ -1,4 +1,4 @@
-
+﻿
 import {
   BrowserRouter,
   Navigate,
@@ -10,6 +10,7 @@ import { motion } from "motion/react";
 import { ShieldCheck } from "lucide-react";
 
 import "./App.css";
+import "./styles/GlassEffects.css";
 
 import AppLayout from "./components/layout/AppLayout";
 
@@ -195,3 +196,4 @@ function BootScreen() {
 }
 
 export default App;
+
