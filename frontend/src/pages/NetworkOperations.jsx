@@ -14,6 +14,8 @@ import {
 import "../styles/NetworkOperations.css";
 import "../styles/ProtocolFilter.css";
 import ProtocolFilter from "../components/telemetry/ProtocolFilter";
+import PacketRateAnalytics from "../components/telemetry/PacketRateAnalytics";
+import "../styles/PacketRateAnalytics.css";
 
 import {
   Activity,
@@ -1096,6 +1098,14 @@ function NetworkOperations() {
           AGGREGATED CONNECTION FLOW TABLE
           ===================================================== */}
 
+      {/* SENTINEL-X 2.0 - LIVE PACKET RATE ANALYTICS */}
+
+      <PacketRateAnalytics
+        totalPackets={telemetry.total_packets_seen}
+        captureActive={captureActive}
+        telemetryTimestamp={telemetry.timestamp}
+        intervalMs={1500}
+      />
       <ProtocolFilter
         selectedProtocol={selectedProtocol}
         onProtocolChange={setSelectedProtocol}
