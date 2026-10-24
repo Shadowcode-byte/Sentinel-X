@@ -1,0 +1,190 @@
+
+/* ============================================================
+   SENTINEL-X 2.0
+   NETWORK PROTOCOL FILTER
+   Additive styling - preserves existing NetworkOperations.css
+   ============================================================ */
+
+.sx-protocol-filter {
+  width: 100%;
+  min-width: 0;
+  padding: 18px 20px;
+
+  border: 1px solid rgba(215, 255, 87, 0.12);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(19, 24, 15, 0.96),
+      rgba(8, 11, 7, 0.98)
+    );
+}
+
+.sx-protocol-filter__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 17px;
+}
+
+.sx-protocol-filter__title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  color: #d7ff57;
+  font-family: var(--font-tech, monospace);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.sx-protocol-filter__hint {
+  color: #858a75;
+  font-family: var(--font-tech, monospace);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+.sx-protocol-filter__options {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 9px;
+}
+
+.sx-protocol-filter__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  min-height: 39px;
+  padding: 10px 14px;
+
+  border: 1px solid rgba(215, 255, 87, 0.12);
+  border-radius: 4px;
+
+  background: rgba(215, 255, 87, 0.025);
+  color: #939987;
+
+  font-family: var(--font-tech, monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+
+  cursor: pointer;
+
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.sx-protocol-filter__button:hover:not(:disabled) {
+  color: #d7ff57;
+  border-color: rgba(215, 255, 87, 0.4);
+  background: rgba(215, 255, 87, 0.055);
+}
+
+.sx-protocol-filter__button.is-active {
+  color: #d7ff57;
+  border-color: rgba(215, 255, 87, 0.55);
+  background: rgba(215, 255, 87, 0.09);
+
+  box-shadow:
+    inset 0 0 15px rgba(215, 255, 87, 0.035),
+    0 0 15px rgba(215, 255, 87, 0.035);
+}
+
+.sx-protocol-filter__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 23px;
+  padding: 3px 6px;
+
+  border-radius: 3px;
+
+  color: #a6ad91;
+  background: rgba(255, 255, 255, 0.055);
+
+  font-size: 9px;
+  font-variant-numeric: tabular-nums;
+}
+
+.sx-protocol-filter__button.is-active
+.sx-protocol-filter__count {
+  color: #d7ff57;
+  background: rgba(215, 255, 87, 0.12);
+}
+
+.sx-protocol-filter__reset {
+  display: grid;
+  place-items: center;
+
+  width: 39px;
+  height: 39px;
+
+  border: 1px solid rgba(215, 255, 87, 0.14);
+  border-radius: 4px;
+
+  color: #939987;
+  background: transparent;
+
+  cursor: pointer;
+
+  transition:
+    color 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease;
+}
+
+.sx-protocol-filter__reset:hover:not(:disabled) {
+  color: #d7ff57;
+  border-color: rgba(215, 255, 87, 0.45);
+  background: rgba(215, 255, 87, 0.06);
+}
+
+.sx-protocol-filter__button:disabled,
+.sx-protocol-filter__reset:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.sx-protocol-filter__button:focus-visible,
+.sx-protocol-filter__reset:focus-visible {
+  outline: 2px solid #d7ff57;
+  outline-offset: 3px;
+}
+
+@media (max-width: 650px) {
+  .sx-protocol-filter {
+    padding: 14px;
+  }
+
+  .sx-protocol-filter__options {
+    gap: 7px;
+  }
+
+  .sx-protocol-filter__button {
+    flex: 1 1 auto;
+    padding: 10px;
+    font-size: 9px;
+  }
+
+  .sx-protocol-filter__hint {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sx-protocol-filter__button,
+  .sx-protocol-filter__reset {
+    transition: none;
+  }
+}

@@ -12,6 +12,8 @@ import {
 } from "motion/react";
 
 import "../styles/NetworkOperations.css";
+import "../styles/ProtocolFilter.css";
+import ProtocolFilter from "../components/telemetry/ProtocolFilter";
 
 import {
   Activity,
@@ -120,6 +122,8 @@ function NetworkOperations() {
   } = useOutletContext();
 
   const reduceMotion = useReducedMotion();
+
+  const [selectedProtocol, setSelectedProtocol] = useState("ALL");
 
   const [telemetry, setTelemetry] = useState(
     EMPTY_TELEMETRY
@@ -344,9 +348,47 @@ function NetworkOperations() {
    * =====================================================
    */
 
+  const protocolCounts = useMemo(() => {
+    const connections = telemetry.connections || [];
+
+    const counts = {
+      ALL: connections.length,
+      TCP: 0,
+      UDP: 0,
+      DNS: 0,
+      ICMP: 0,
+    };
+
+    connections.forEach((connection) => {
+      const protocol = String(
+        connection.protocol || ""
+      ).toUpperCase();
+
+      if (Object.prototype.hasOwnProperty.call(counts, protocol)) {
+        counts[protocol] += 1;
+      }
+    });
+
+    return counts;
+  }, [telemetry.connections]);
+
+  const filteredConnections = useMemo(() => {
+    const connections = telemetry.connections || [];
+
+    if (selectedProtocol === "ALL") {
+      return connections;
+    }
+
+    return connections.filter(
+      (connection) =>
+        String(connection.protocol || "").toUpperCase() ===
+        selectedProtocol
+    );
+  }, [telemetry.connections, selectedProtocol]);
+
   const recentConnections = useMemo(
-    () => telemetry.connections.slice(0, 8),
-    [telemetry.connections]
+    () => filteredConnections.slice(0, 8),
+    [filteredConnections]
   );
 
 
@@ -1053,6 +1095,12 @@ function NetworkOperations() {
       {/* =====================================================
           AGGREGATED CONNECTION FLOW TABLE
           ===================================================== */}
+
+      <ProtocolFilter
+        selectedProtocol={selectedProtocol}
+        onProtocolChange={setSelectedProtocol}
+        counts={protocolCounts}
+      />
 
       <section className="network-connections-panel">
         <div className="network-panel-heading">
