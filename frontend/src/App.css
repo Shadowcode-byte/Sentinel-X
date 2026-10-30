@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    SENTINEL-X
    FIELD DEFENSE SYSTEM
    VISUAL SYSTEM V3
@@ -1426,6 +1426,11 @@ a {
 .adaptive-defense-core.state-attack {
   --state-color: var(--red);
   --state-soft: rgba(255, 93, 82, 0.13);
+}
+
+.adaptive-defense-core.state-critical {
+  --state-color: var(--red);
+  --state-soft: rgba(255, 93, 82, 0.18);
 }
 
 .adaptive-defense-core.state-contained {
