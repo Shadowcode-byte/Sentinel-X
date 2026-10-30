@@ -1,5 +1,5 @@
 from app.services.event_service import create_security_event
-from app.services.incident_service import create_incident
+from app.services.incident_service import create_or_escalate_incident
 from app.services.risk_service import create_risk_assessment
 from app.services.forensics_service import create_forensic_evidence
 
@@ -12,14 +12,19 @@ def process_detection_response(detection: dict):
         ->
     Security Event
         ->
-    Incident
+    Correlated Incident
         ->
     Risk Assessment
         ->
     Forensic Evidence + SHA-256
 
+    A correlated SCAN-001 campaign reuses the same active
+    incident while preserving separate security events,
+    risk assessments and forensic evidence for meaningful
+    severity escalations.
+
     Returns the enriched detection record containing IDs
-    created by each stage.
+    created or correlated by each stage.
     """
 
     result = {
@@ -102,12 +107,17 @@ def process_detection_response(detection: dict):
 
 
     # -----------------------------------------------------
-    # 2. INCIDENT
+    # 2. CORRELATED INCIDENT
+    #
+    # LOW -> MEDIUM -> HIGH -> CRITICAL detections from
+    # the same active SCAN-001 campaign reuse one incident
+    # rather than creating a new incident at every
+    # severity threshold.
     # -----------------------------------------------------
 
     try:
 
-        stored_incident = create_incident(
+        stored_incident = create_or_escalate_incident(
             incident_type=detection[
                 "rule_id"
             ],
@@ -150,6 +160,18 @@ def process_detection_response(detection: dict):
                     stored_incident[
                         "status"
                     ],
+
+                "incident_correlated":
+                    stored_incident.get(
+                        "correlated",
+                        False,
+                    ),
+
+                "severity_escalated":
+                    stored_incident.get(
+                        "severity_escalated",
+                        False,
+                    ),
             }
         )
 
@@ -164,6 +186,12 @@ def process_detection_response(detection: dict):
                 "incident_status":
                     None,
 
+                "incident_correlated":
+                    False,
+
+                "severity_escalated":
+                    False,
+
                 "incident_error":
                     str(exc),
             }
@@ -173,7 +201,7 @@ def process_detection_response(detection: dict):
         print(
             "[SENTINEL-X ERROR] "
             "Security event persisted, "
-            "but incident creation failed: "
+            "but incident correlation failed: "
             f"{exc}"
         )
 
@@ -183,6 +211,10 @@ def process_detection_response(detection: dict):
 
     # -----------------------------------------------------
     # 3. RISK ASSESSMENT
+    #
+    # Preserve a fresh assessment for every meaningful
+    # detection/escalation. This provides an explainable
+    # risk history for the correlated incident.
     # -----------------------------------------------------
 
     try:
@@ -252,7 +284,7 @@ def process_detection_response(detection: dict):
 
         print(
             "[SENTINEL-X ERROR] "
-            "Incident created, but "
+            "Incident created/correlated, but "
             "risk assessment failed: "
             f"{exc}"
         )
@@ -276,6 +308,11 @@ def process_detection_response(detection: dict):
             "rule_name":
                 detection.get(
                     "rule_name"
+                ),
+
+            "severity":
+                detection.get(
+                    "severity"
                 ),
 
             "detection_method":
@@ -320,6 +357,11 @@ def process_detection_response(detection: dict):
                     "detected_at"
                 ),
 
+            "critical_reason":
+                detection.get(
+                    "critical_reason"
+                ),
+
             "security_event_id":
                 stored_event[
                     "id"
@@ -329,6 +371,18 @@ def process_detection_response(detection: dict):
                 stored_incident[
                     "id"
                 ],
+
+            "incident_correlated":
+                stored_incident.get(
+                    "correlated",
+                    False,
+                ),
+
+            "severity_escalated":
+                stored_incident.get(
+                    "severity_escalated",
+                    False,
+                ),
 
             "initial_risk_assessment_id":
                 stored_risk[
@@ -371,6 +425,7 @@ def process_detection_response(detection: dict):
 
             description=(
                 "Preserved Sentinel-X "
+                f"{detection['severity']} "
                 "SCAN-001 detection artifact."
             ),
 
@@ -433,13 +488,25 @@ def process_detection_response(detection: dict):
     # PIPELINE SUCCESS
     # -----------------------------------------------------
 
+    correlation_label = (
+        "CORRELATED"
+        if stored_incident.get(
+            "correlated",
+            False,
+        )
+        else "NEW"
+    )
+
+
     print(
         "[SENTINEL-X RESPONSE] "
         f"{detection['rule_id']} | "
+        f"{detection['severity']} | "
         f"{detection['source']} -> "
         f"{detection['target']} | "
         f"EVENT #{stored_event['id']} | "
-        f"INCIDENT #{stored_incident['id']} | "
+        f"INCIDENT #{stored_incident['id']} "
+        f"({correlation_label}) | "
         f"RISK {stored_risk['risk_score']}/100 "
         f"{stored_risk['risk_level']} | "
         f"EVIDENCE #{stored_evidence['id']} | "

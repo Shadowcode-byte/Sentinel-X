@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+﻿from datetime import datetime, timezone
 from threading import Lock
 
 from scapy.layers.dns import DNS
@@ -13,10 +13,10 @@ from app.services.response_pipeline import process_detection_response
 # ---------------------------------------------------------
 
 WIFI_INTERFACE = (
-    r"\Device\NPF_{A386622D-F578-4A9D-83EC-7B71EB4C8CB9}"
+    r"\Device\NPF_{43232A06-84C6-431B-A60C-9C64376C7AAC}"
 )
 
-INTERFACE_NAME = "Local Area Connection* 2"
+INTERFACE_NAME = "Local Area Connection* 9"
 
 INTERFACE_DESCRIPTION = (
     "Microsoft Wi-Fi Direct Virtual Adapter #2"
@@ -38,7 +38,7 @@ class PacketCollector:
     - Maintain protocol counters
     - Aggregate packets into flows
     - Extract TCP SYN / ACK state
-    - Run SCAN-001 detection
+    - Run multi-severity SCAN-001 detection
     - Forward detections to the response pipeline
 
     Response pipeline:
@@ -534,11 +534,22 @@ class PacketCollector:
                 "detection_method":
                     "TCP_SYN_MULTI_PORT",
 
-                "scan_threshold":
-                    (
-                        "8 unique SYN destination "
-                        "ports / 10 seconds"
+                "detection_severities": [
+                    "LOW",
+                    "MEDIUM",
+                    "HIGH",
+                    "CRITICAL",
+                ],
+
+                "scan_thresholds": {
+                    "LOW": "3 unique SYN destination ports / 10 seconds",
+                    "MEDIUM": "5 unique SYN destination ports / 10 seconds",
+                    "HIGH": "8 unique SYN destination ports / 10 seconds",
+                    "CRITICAL": (
+                        "Second distinct HIGH-strength scan "
+                        "burst from the same source within 60 seconds"
                     ),
+                },
 
                 "event_persistence":
                     "sqlite",
@@ -677,12 +688,26 @@ class PacketCollector:
                 "method":
                     "TCP_SYN_MULTI_PORT",
 
-                "threshold": {
-                    "unique_ports":
-                        8,
+                "thresholds": {
+                    "LOW": {
+                        "unique_ports": 3,
+                        "window_seconds": 10,
+                    },
 
-                    "window_seconds":
-                        10,
+                    "MEDIUM": {
+                        "unique_ports": 5,
+                        "window_seconds": 10,
+                    },
+
+                    "HIGH": {
+                        "unique_ports": 8,
+                        "window_seconds": 10,
+                    },
+
+                    "CRITICAL": {
+                        "condition": "REPEATED_HIGH_SCAN",
+                        "history_seconds": 60,
+                    },
                 },
 
                 "incident_creation":
@@ -761,3 +786,4 @@ class PacketCollector:
 # ---------------------------------------------------------
 
 packet_collector = PacketCollector()
+
