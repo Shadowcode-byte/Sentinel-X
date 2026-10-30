@@ -14,7 +14,7 @@ def process_detection_response(detection: dict):
         ->
     Correlated Incident
         ->
-    Risk Assessment
+    Dynamic Risk Assessment
         ->
     Forensic Evidence + SHA-256
 
@@ -22,6 +22,12 @@ def process_detection_response(detection: dict):
     incident while preserving separate security events,
     risk assessments and forensic evidence for meaningful
     severity escalations.
+
+    Dynamic Risk v2 additionally uses traffic evidence:
+
+        - port_count
+        - window_seconds
+        - critical_reason
 
     Returns the enriched detection record containing IDs
     created or correlated by each stage.
@@ -210,11 +216,22 @@ def process_detection_response(detection: dict):
 
 
     # -----------------------------------------------------
-    # 3. RISK ASSESSMENT
+    # 3. DYNAMIC RISK ASSESSMENT v2
     #
     # Preserve a fresh assessment for every meaningful
-    # detection/escalation. This provides an explainable
-    # risk history for the correlated incident.
+    # detection/escalation.
+    #
+    # Unlike Risk Model v1, the numerical score is no
+    # longer determined only by categorical values.
+    #
+    # Dynamic Risk v2 receives actual SCAN-001 evidence:
+    #
+    #   - unique destination-port count
+    #   - observation window
+    #   - repeated HIGH behavior
+    #
+    # This allows attacks of the same categorical severity
+    # to receive different numerical risk scores.
     # -----------------------------------------------------
 
     try:
@@ -240,6 +257,21 @@ def process_detection_response(detection: dict):
 
             detection_confidence=
                 "HIGH",
+
+            port_count=
+                detection.get(
+                    "port_count"
+                ),
+
+            window_seconds=
+                detection.get(
+                    "window_seconds"
+                ),
+
+            critical_reason=
+                detection.get(
+                    "critical_reason"
+                ),
         )
 
 
@@ -259,6 +291,26 @@ def process_detection_response(detection: dict):
                     stored_risk[
                         "risk_level"
                     ],
+
+                "traffic_intensity_score":
+                    stored_risk.get(
+                        "traffic_intensity_score"
+                    ),
+
+                "port_intensity_score":
+                    stored_risk.get(
+                        "port_intensity_score"
+                    ),
+
+                "repeated_behavior_bonus":
+                    stored_risk.get(
+                        "repeated_behavior_bonus"
+                    ),
+
+                "risk_rationale":
+                    stored_risk.get(
+                        "rationale"
+                    ),
             }
         )
 
@@ -276,6 +328,18 @@ def process_detection_response(detection: dict):
                 "risk_level":
                     None,
 
+                "traffic_intensity_score":
+                    None,
+
+                "port_intensity_score":
+                    None,
+
+                "repeated_behavior_bonus":
+                    None,
+
+                "risk_rationale":
+                    None,
+
                 "risk_error":
                     str(exc),
             }
@@ -285,7 +349,7 @@ def process_detection_response(detection: dict):
         print(
             "[SENTINEL-X ERROR] "
             "Incident created/correlated, but "
-            "risk assessment failed: "
+            "dynamic risk assessment failed: "
             f"{exc}"
         )
 
@@ -398,6 +462,26 @@ def process_detection_response(detection: dict):
                 stored_risk[
                     "risk_level"
                 ],
+
+            "traffic_intensity_score":
+                stored_risk.get(
+                    "traffic_intensity_score"
+                ),
+
+            "port_intensity_score":
+                stored_risk.get(
+                    "port_intensity_score"
+                ),
+
+            "repeated_behavior_bonus":
+                stored_risk.get(
+                    "repeated_behavior_bonus"
+                ),
+
+            "risk_rationale":
+                stored_risk.get(
+                    "rationale"
+                ),
         }
 
 
@@ -504,11 +588,15 @@ def process_detection_response(detection: dict):
         f"{detection['severity']} | "
         f"{detection['source']} -> "
         f"{detection['target']} | "
+        f"PORTS "
+        f"{detection.get('port_count', 0)} | "
         f"EVENT #{stored_event['id']} | "
         f"INCIDENT #{stored_incident['id']} "
         f"({correlation_label}) | "
         f"RISK {stored_risk['risk_score']}/100 "
         f"{stored_risk['risk_level']} | "
+        f"INTENSITY "
+        f"{stored_risk.get('traffic_intensity_score')} | "
         f"EVIDENCE #{stored_evidence['id']} | "
         f"SHA256 "
         f"{stored_evidence['sha256_hash'][:12]}..."

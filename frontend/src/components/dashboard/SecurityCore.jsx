@@ -1,4 +1,4 @@
-import {
+﻿import {
   useMemo,
   useState,
 } from "react";
@@ -159,6 +159,7 @@ function calculateDisplayRisk(
 
 function SecurityCore({
   threatLevel = "UNKNOWN",
+  currentRiskScore = null,
   backendOnline = false,
   eventCount = 0,
   captureActive = false,
@@ -177,36 +178,74 @@ function SecurityCore({
   });
 
 
-  const defenseState = useMemo(
-    () =>
-      resolveDefenseState(
-        threatLevel,
-        backendOnline
-      ),
-    [
+  const risk = useMemo(() => {
+    if (!backendOnline) {
+      return null;
+    }
+
+    const actualScore = Number(currentRiskScore);
+
+    if (
+      currentRiskScore !== null &&
+      currentRiskScore !== undefined &&
+      currentRiskScore !== "" &&
+      Number.isFinite(actualScore) &&
+      actualScore >= 0 &&
+      actualScore <= 100
+    ) {
+      return actualScore;
+    }
+
+    return calculateDisplayRisk(
       threatLevel,
-      backendOnline,
-    ]
-  );
+      backendOnline
+    );
+  }, [
+    currentRiskScore,
+    threatLevel,
+    backendOnline,
+  ]);
+
+
+  const defenseState = useMemo(() => {
+    if (!backendOnline) {
+      return "OFFLINE";
+    }
+
+    if (
+      risk !== null &&
+      Number.isFinite(risk)
+    ) {
+      if (risk >= 85) {
+        return "CRITICAL";
+      }
+
+      if (risk >= 65) {
+        return "ATTACK";
+      }
+
+      if (risk >= 40) {
+        return "ELEVATED";
+      }
+
+      return "SECURE";
+    }
+
+    return resolveDefenseState(
+      threatLevel,
+      backendOnline
+    );
+  }, [
+    risk,
+    threatLevel,
+    backendOnline,
+  ]);
 
 
   const config =
     STATE_CONFIG[
       defenseState
     ];
-
-
-  const risk = useMemo(
-    () =>
-      calculateDisplayRisk(
-        threatLevel,
-        backendOnline
-      ),
-    [
-      threatLevel,
-      backendOnline,
-    ]
-  );
 
 
   const isAttack =
@@ -514,19 +553,19 @@ function SecurityCore({
           {/* Bearing labels */}
 
           <span className="adc-bearing bearing-north">
-            000°
+            000Â°
           </span>
 
           <span className="adc-bearing bearing-east">
-            090°
+            090Â°
           </span>
 
           <span className="adc-bearing bearing-south">
-            180°
+            180Â°
           </span>
 
           <span className="adc-bearing bearing-west">
-            270°
+            270Â°
           </span>
 
 
@@ -948,7 +987,7 @@ function SecurityCore({
               >
                 {risk === null
                   ? "—"
-                  : risk}
+                  : Math.round(risk)}
               </motion.strong>
 
 
@@ -1125,3 +1164,4 @@ function StateStep({
 
 
 export default SecurityCore;
+
