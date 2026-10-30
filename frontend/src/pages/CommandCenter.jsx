@@ -234,6 +234,7 @@ function CommandCenter({
       <section className="primary-grid">
         <SecurityCore
           threatLevel={threatLevel}
+          currentRiskScore={currentRiskScore}
           backendOnline={backendOnline}
           eventCount={events.length}
           captureActive={captureActive}
